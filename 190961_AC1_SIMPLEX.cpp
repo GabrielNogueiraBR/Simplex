@@ -21,7 +21,8 @@ void aloca_char(char **p, int tam);
 void mostra_tabela(float *m, int lin, int col, char **p);
 
 //obtendo as informacoes do arquivo e passando para a tabela
-//void informacoes_arq(flor *m);
+void informacoes_arq(float *m, int lin, int col, int vd, int res);
+
 
 main(){
 	
@@ -62,7 +63,7 @@ main(){
 						};
 	
 	//preenchendo a tabela com as informacoes do arquivo
-	//informacoes_arq(m);
+	informacoes_arq(m,lin,col,vd,rest);
 	
 	//mostrando a tabela
 	printf("\n\n");
@@ -93,7 +94,6 @@ int retorna_vd(){
 			
 			col = -1;
 			fscanf(fptr,"%f%c", &col,&aux);
-			
 			if(col != -1){
 				qtde++; //quantidade das variaveis de decisao
 			}
@@ -135,7 +135,6 @@ int retorna_r(){
 	}
 	return qtde; // retorna o numero de variaveis de decisao do problema
 }
-
 
 void aloca_pchar(char ***p, int tam){
 	if( (*p = (char**) realloc(*p, tam*sizeof(char*))) == NULL)
@@ -204,7 +203,6 @@ void mostra_tabela(float *m, int lin, int col, char **p){
 			}
 		}
 		
-		
 		// Para exibir as informacoes (variavel)
 		else{
 			pos = (i-1) * col;
@@ -228,18 +226,96 @@ void mostra_tabela(float *m, int lin, int col, char **p){
 						printf("\n"); //pulando linha no final da tabela	
 					}
 				}
-				
-				
 			}
 		}		
-		
-		
-		
 	}
-	
-	
 }
 
+void informacoes_arq(float *m, int lin, int col, int vd, int res){
+	
+	FILE *fptr = NULL;
+	
+	int linha = -1; //indica a primeira linha
+	char aux; // para identificar quando vai pular de linha e o final do arquivo
+	float m_aux[lin][col], value; //valores da tabela a serem preenchidos
+	int i,j;
+	int pos; //para andar com o vetor
+	
+	//inicializando a matriz com zeros
+	for(i = 0; i < lin; i++)
+		for(j = 0; j < col; j++)
+			m_aux[i][j] = 0;
+	
+	if((fptr = fopen("simplex.txt","r")) == NULL){
+		printf("\nArquivo inexistente.\n");
+	}
+	
+	else{
+		j = 0;
+		while( aux != EOF){
+			
+			//recebendo os valores
+			fscanf(fptr,"%f", &value);
+			aux = getc(fptr);
+		
+			if(linha == -1){
+				//printf("\nA\n");
+				m_aux[lin-1][j] = -value;
+				j++;
+			} //valores da primeira linha
+			else{
+				
+				if(j < vd){
+					m_aux[linha][j] = value;
+				}
+				else if( j == vd )
+				{
+					m_aux[linha][col-1] = value;
+				}
+				j++;
+			} //valores das demais linhas
+						
+			if(aux == '\n'){
+				linha++; //informar que passou para a proxima linha
+				j = 0; //posicao das colunas
+			}
+			
+		}
+		fclose(fptr);
+		
+		//adicionando as variaveis de folga
+		for(i = 0; i < lin -1 ; i++)
+			for(j = 0; j < col; j++)
+			{
+				m_aux[i][vd+i] = 1;
+			}
+		
+//		printf("\n\n\n");
+//		for(i = 0; i < lin; i++){
+//			for(j = 0; j < col; j++)
+//				printf("\t%.1f", m_aux[i][j]);
+//				
+//			printf("\n");
+//		}
+
+		//Preenchimento da tabela a partir da matriz
+		for(i = 0; i < lin ; i++){
+		
+			for(j = 0; j < col; j++)
+			{
+				
+				pos = (i *col) + j; //para encontrar a posicao equivalente no vetor
+				
+				*(m+pos) = m_aux[i][j];
+				
+			}
+		
+		}		
+
+				
+		
+	}
+}
 
 
 
