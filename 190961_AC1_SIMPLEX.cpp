@@ -55,12 +55,7 @@ main(){
 	alimenta_nomes(x,var_t);
 	
 	//vetor para a tabela
-	float m[lin*col]  = {
-							1,0,1,0,0,4,
-							0,1,0,1,0,12,
-							3,2,0,0,1,18,
-							-3,-5,0,0,0,0
-						};
+	float m[lin*col];
 	
 	//preenchendo a tabela com as informacoes do arquivo
 	informacoes_arq(m,lin,col,vd,rest);
@@ -68,7 +63,6 @@ main(){
 	//mostrando a tabela
 	printf("\n\n");
 	mostra_tabela(m,lin,col,x);
-	
 	
 	printf("\n\n\n\n\n\n\n\n");
 	printf("\nNumero de variaveis de decisao: %i", vd);
@@ -303,17 +297,11 @@ void informacoes_arq(float *m, int lin, int col, int vd, int res){
 		
 			for(j = 0; j < col; j++)
 			{
-				
 				pos = (i *col) + j; //para encontrar a posicao equivalente no vetor
 				
 				*(m+pos) = m_aux[i][j];
-				
 			}
-		
 		}		
-
-				
-		
 	}
 }
 
