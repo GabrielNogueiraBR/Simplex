@@ -7,6 +7,8 @@ int retorna_vd();
 //funcao para retornar o numero de restricoes do problema
 int retorna_r();
 
+
+
 main(){
 	
 	//numero de variaveis de decisao
@@ -14,6 +16,15 @@ main(){
 	
 	//numero de restricoes do problema
 	int rest = retorna_r();
+	
+	//numero de variaveis de folga
+	int var_folgas = rest;
+	
+	//numero total de colunas da tabela
+	int col = vd + var_folgas + 1; //+1 por causa de Z (funcao)
+	
+	//numero total de linhas da nossa tabela
+	int lin = rest + 1;
 	
 	
 	printf("\nNumero de variaveis de decisao: %i", vd);
@@ -25,38 +36,33 @@ int retorna_vd(){
 	
 	FILE *fptr = NULL;
 	
-	int qtde = 0,i,j;
-	float col[10];
-	
+	int qtde = 0; //vai retornar o numero de variaveis de decisao
+	float col; //vai identificar se a culuna esta preenchida
 	char aux; // para identificar quando vai pular de linha
+	char fim_arquivo; //para controlar o while e o fim do ponteiro para FILE
 		
 	if((fptr = fopen("simplex.txt","r")) == NULL){
 		printf("\nArquivo inexistente.\n");
 	}
 	else{
 		
-		for(i = 0 ; i < 10; i++){
-			col[i] = -1;
-		}
-		
-		for(i = 0 ; i < 10; i++){
-			fscanf(fptr, "%f%c", &col[i], &aux);
-			if(aux == '\n')
-				break;
-		}
+		while(fim_arquivo != EOF){
 			
-		for(j=0; j <10 ; j++){
-			if(col[j] != -1 )
-			{
+			col = -1;
+			fscanf(fptr,"%f%c", &col,&aux);
+			
+			if(col != -1){
 				qtde++; //quantidade das variaveis de decisao
-			}	
-		}	
+			}
+			
+			if(aux == '\n')
+				break; //termina a primeira linha
+		}
 		fclose(fptr);	
 	}
 		
 	return qtde; // retorna o numero de variaveis de decisao do problema
 }
-
 
 int retorna_r(){
 	
@@ -65,28 +71,26 @@ int retorna_r(){
 	int qtde = 0; 	//para registrar a quantidade de restricoes
 	char aux; 		//para identificar quando vai pular de linha
 	float f;
+	char fim_arquivo; //para controlar o while e o fim do ponteiro para FILE
 	
 	if((fptr = fopen("simplex.txt","r")) == NULL){
 		printf("\nArquivo inexistente.\n");
 	}
 	else{
-		while(getc(fptr) != EOF){
-			
-			fscanf(fptr, "%c",&aux);
-			
-			if(aux == '\n' && i == 0){
-				i++;//apenas para separar a primeira linha do simplex com as restricoes
-			}
-			
-			if(aux == '\n'){
-				qtde++;//quantidade de restricoes
-				
-			}
-			
-		}
-		fclose(fptr);	
-	}
 		
+		while(aux != EOF){
+			
+			aux = getc(fptr);
+			printf("\n--%c--\n", aux);
+			
+			if(aux == '\n' && i > 0){
+				qtde++;//quantidade de restricoes
+			}
+			
+			i++;//apenas para separar a primeira linha do simplex com as restricoes
+		}
+		fclose(fptr);
+	}
 	return qtde; // retorna o numero de variaveis de decisao do problema
 }
 
