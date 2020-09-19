@@ -384,4 +384,35 @@ int entra_base(float *m, int lin, int col){
 	return entra;
 }
 
+int sai_base(float *m, int lin, int col, int coluna_entra){
+	
+	int sai = -1;
+	int menor_razao;
+	int aux_razao;
+	int pos, pos_b;
+	
+	pos_b = col -1; //posicao do ultimo elemento da linha que representa o b
+	
+	for(int i = 0 ; i < lin - 1; i++){
+		
+		pos = (i * col) + coluna_entra;
+		aux_razao = (*(m+pos)) / (*(m+pos_b));
+		
+		if( i == 0 && *(m+pos) != 0){
+			menor_razao = (*(m+pos_b)) / (*(m+pos));
+			sai = i;
+		} //primeira ocorrencia
+		
+		else if( aux_razao < menor_razao && *(m+pos) != 0 ){
+			menor_razao =  (*(m+pos_b)) / (*(m+pos));
+			sai = i;
+		}
+		
+		pos_b += col;
+	}
+	
+	return sai;
+}
+
+
 
