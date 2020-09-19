@@ -29,6 +29,18 @@ bool verifica_solucao(float *m, int lin, int col);
 
 //verifica a coluna que vai entrar na base e retorna o indice da coluna
 int entra_base(float *m, int lin, int col);
+
+//** 
+//verifica a linha que vai sair da base e retorna o indice da linha
+int sai_base(float *m, int lin, int col, int coluna_entra);
+
+//troca o nome das variaveis
+void troca_nome(char **p, int coluna_entra, int linha_sai, int var_dec);
+
+//recalcula as linhas
+void recalcular_linhas(float *m, int lin, int col, int linha_pivo, int coluna_pivo);
+
+
 main(){
 	
 	//numero de variaveis de decisao
