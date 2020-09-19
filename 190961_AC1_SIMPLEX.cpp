@@ -88,6 +88,16 @@ main(){
 		
 		//indice da coluna que vai entrar na base
 		int entra = entra_base(m, lin, col);
+		
+		//indica a linha que vai sair da base
+		int sai = sai_base(m, lin, col, entra);
+		
+		//atualizar o nome da coluna que sai
+		troca_nome(x, entra, sai, vd + 1);
+		
+		//atualizando as linhas abaixo da pivo
+		recalcular_linhas(m, lin, col, sai, entra);
+		
 		solucao_otima = verifica_solucao(m,lin,col);
 		
 	}//continua executando enquanto nao encontrar a solucao otima
@@ -344,7 +354,7 @@ bool verifica_solucao(float *m, int lin, int col){
 	int pos;
 	int i;
 	
-	pos = (lin-1) * col; //definindo o primeiro numero da linha Z (ï¿½ltima linha) 
+	pos = (lin-1) * col; //definindo o primeiro numero da linha Z (última linha) 
 	
 	for(i = 0 ; i < col ; i++){
 		if( *(m+pos+i) < 0 )
@@ -361,7 +371,7 @@ int entra_base(float *m, int lin, int col){
 	int i;
 	int entra;
 	
-	pos = (lin-1) * col; //definindo o primeiro numero da linha Z (ï¿½ltima linha) 
+	pos = (lin-1) * col; //definindo o primeiro numero da linha Z (última linha) 
 	
 	for(i = 0 ; i < col ; i++){
 		if( *(m+pos+i) < 0 && *(m+pos+i) < maior_negativo){
