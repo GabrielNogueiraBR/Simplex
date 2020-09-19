@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 //funcao para retornar o numero de variaveis de decisao do problema
 int retorna_vd();
@@ -23,6 +24,8 @@ void mostra_tabela(float *m, int lin, int col, char **p);
 //obtendo as informacoes do arquivo e passando para a tabela
 void informacoes_arq(float *m, int lin, int col, int vd, int res);
 
+//verifica se a solucao e otima
+bool verifica_solucao(float *m, int lin, int col);
 
 main(){
 	
@@ -60,11 +63,24 @@ main(){
 	//preenchendo a tabela com as informacoes do arquivo
 	informacoes_arq(m,lin,col,vd,rest);
 	
-	//mostrando a tabela
+	//verificando a solucao otima
+	bool solucao_otima = verifica_solucao(m,lin,col);
+	
+	while(solucao_otima != true){
+		
+		//mostrando a tabela
+		printf("\n\n");
+		mostra_tabela(m,lin,col,x);
+		solucao_otima = verifica_solucao(m,lin,col);
+		
+	}//continua executando enquanto nao encontrar a solucao otima
+	
+	//mostrando a tabela final
 	printf("\n\n");
 	mostra_tabela(m,lin,col,x);
 	
-	printf("\n\n\n\n\n\n\n\n");
+	
+	printf("\n\n\n\n\n\n\t\tINFORMACOES IMPORTANTES:\n");
 	printf("\nNumero de variaveis de decisao: %i", vd);
 	printf("\nNumero de restricoes: %i", rest);
 	
@@ -305,6 +321,21 @@ void informacoes_arq(float *m, int lin, int col, int vd, int res){
 	}
 }
 
+bool verifica_solucao(float *m, int lin, int col){
+	
+	bool verifica = true;
+	int pos;
+	int i;
+	
+	pos = (lin-1) * col; //definindo o primeiro numero da linha Z (�ltima linha) 
+	
+	for(i = 0 ; i < col ; i++){
+		if( *(m+pos+i) < 0 )
+			verifica = false;
+	}
+		
+	return verifica;
+}
 
 
 
