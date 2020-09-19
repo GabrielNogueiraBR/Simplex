@@ -27,6 +27,8 @@ void informacoes_arq(float *m, int lin, int col, int vd, int res);
 //verifica se a solucao e otima
 bool verifica_solucao(float *m, int lin, int col);
 
+//verifica a coluna que vai entrar na base e retorna o indice da coluna
+int entra_base(float *m, int lin, int col);
 main(){
 	
 	//numero de variaveis de decisao
@@ -71,6 +73,9 @@ main(){
 		//mostrando a tabela
 		printf("\n\n");
 		mostra_tabela(m,lin,col,x);
+		
+		//indice da coluna que vai entrar na base
+		int entra = entra_base(m, lin, col);
 		solucao_otima = verifica_solucao(m,lin,col);
 		
 	}//continua executando enquanto nao encontrar a solucao otima
@@ -337,7 +342,24 @@ bool verifica_solucao(float *m, int lin, int col){
 	return verifica;
 }
 
-
-
+int entra_base(float *m, int lin, int col){
+	
+	int maior_negativo = 0;
+	int pos;
+	int i;
+	int entra;
+	
+	pos = (lin-1) * col; //definindo o primeiro numero da linha Z (�ltima linha) 
+	
+	for(i = 0 ; i < col ; i++){
+		if( *(m+pos+i) < 0 && *(m+pos+i) < maior_negativo){
+			maior_negativo = *(m+pos+i); //maior numero negativo
+			entra = i; //indice da posicao com o maior numero negativo
+		}
+			
+	}
+		
+	return entra;
+}
 
 
