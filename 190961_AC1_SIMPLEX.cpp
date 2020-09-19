@@ -40,6 +40,11 @@ void troca_nome(char **p, int coluna_entra, int linha_sai, int var_dec);
 //recalcula as linhas
 void recalcular_linhas(float *m, int lin, int col, int linha_pivo, int coluna_pivo);
 
+//multiplica linha
+void multiplica_linha(float *m, int lin, int col, int linha_mult, float num);
+
+//soma linha
+void soma_linha(float *m_destino, float *m_origem, int col);
 
 main(){
 	
@@ -99,13 +104,12 @@ main(){
 		recalcular_linhas(m, lin, col, sai, entra);
 		
 		solucao_otima = verifica_solucao(m,lin,col);
-
 	}//continua executando enquanto nao encontrar a solucao otima
 	
 	//mostrando a tabela final
 	printf("\n\n");
 	mostra_tabela(m,lin,col,x);
-	
+	printf("\n\n");
 	
 	printf("\n\n\n\n\n\n\t\tINFORMACOES IMPORTANTES:\n");
 	printf("\nNumero de variaveis de decisao: %i", vd);
@@ -256,7 +260,7 @@ void mostra_tabela(float *m, int lin, int col, char **p){
 				
 				else{
 					
-					printf("\t%.1f", *(m+pos));
+					printf("\t%.2f", *(m+pos));
 					pos++;
 									
 					if(j == col){
@@ -387,25 +391,28 @@ int entra_base(float *m, int lin, int col){
 int sai_base(float *m, int lin, int col, int coluna_entra){
 	
 	int sai = -1;
-	int menor_razao;
-	int aux_razao;
+	int menor_razao, aux_razao;
 	int pos, pos_b;
-	
+	bool primeira_razao = false;
+		
 	pos_b = col -1; //posicao do ultimo elemento da linha que representa o b
 	
 	for(int i = 0 ; i < lin - 1; i++){
 		
 		pos = (i * col) + coluna_entra;
-		aux_razao = (*(m+pos)) / (*(m+pos_b));
+		aux_razao = (*(m+pos_b)) / (*(m+pos));
 		
-		if( i == 0 && *(m+pos) != 0){
+		
+		if( i == 0 && *(m+pos) != 0 && primeira_razao == false){
 			menor_razao = (*(m+pos_b)) / (*(m+pos));
 			sai = i;
+			primeira_razao = true;
 		} //primeira ocorrencia
-		
-		else if( aux_razao < menor_razao && *(m+pos) != 0 ){
+				
+		else if( (aux_razao < menor_razao && *(m+pos) != 0 ) || (primeira_razao == false && *(m+pos) != 0 ) ){
 			menor_razao =  (*(m+pos_b)) / (*(m+pos));
 			sai = i;
+			primeira_razao = true;
 		}
 		
 		pos_b += col;
@@ -422,6 +429,55 @@ void troca_nome(char **p, int coluna_entra, int linha_sai, int var_dec){
 	
 }
 
+void recalcular_linhas(float *m, int lin, int col, int linha_pivo, int coluna_pivo){
+	
+	int pos_pivo; //posicao do numero que intercepta a linha que sai e a coluna que entra
+	float numero_pivo;
+	float aux_linha[col];
+	int pos_mult;
+	float num_mult;
+		
+	pos_pivo = (linha_pivo * col) + coluna_pivo;
+	numero_pivo = *(m+pos_pivo);
+	//dividindo (multiplicando) a linha pivo pelo numero 
+	multiplica_linha(m, lin, col, linha_pivo, 1/numero_pivo);
+	
+	for(int i = 0; i < lin ; i++){
+		
+		pos_mult = (i *col) + coluna_pivo;
+		num_mult = - (*(m+pos_mult));
+	
+		if( i != linha_pivo && num_mult != 0){
+			//copiando a linha pivo em um vetor auxiliar
+			pos_pivo = linha_pivo * col; //aponta para o inicio da linha pivo
+			for(int j= 0 ; j < col; j++){
+				aux_linha[j] = 	*( m + pos_pivo + j);
+			}
+			
+			
+			//multiplicando a linha auxiliar
+			multiplica_linha(aux_linha,lin,col,0,num_mult);
+			
+			
+			
+			
+			//somando a linha auxiliar com a linha da tabela
+			for(int k = 0; k< col; k++){
+				*((m +(i*col)) + k) += aux_linha[k];
+					
+			}
+		}		
+	}
+}
 
-
-
+void multiplica_linha(float *m, int lin, int col, int linha_mult, float num){
+	
+	int pos;
+	
+	pos = linha_mult * col; //aponta para o inicio da linha a ser multiplicada
+	
+	for(int i = 0 ; i < col; i++){
+		*( m + pos + i) *= num; //fazendo a multiplicacao da linha pelo numero 
+	}//varrendo a linha a ser multiplicada
+	
+}
