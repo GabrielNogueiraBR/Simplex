@@ -93,13 +93,13 @@ main(){
 		int sai = sai_base(m, lin, col, entra);
 		
 		//atualizar o nome da coluna que sai
-		troca_nome(x, entra, sai, vd + 1);
+		troca_nome(x, entra, sai, vd);
 		
 		//atualizando as linhas abaixo da pivo
 		recalcular_linhas(m, lin, col, sai, entra);
 		
 		solucao_otima = verifica_solucao(m,lin,col);
-		
+
 	}//continua executando enquanto nao encontrar a solucao otima
 	
 	//mostrando a tabela final
@@ -413,6 +413,15 @@ int sai_base(float *m, int lin, int col, int coluna_entra){
 	
 	return sai;
 }
+
+void troca_nome(char **p, int coluna_entra, int linha_sai, int var_dec){
+	
+	int pos_dest = var_dec + linha_sai; //posicao destino
+	int pos_ori = coluna_entra; //posicao origem
+	strcpy(*(p+pos_dest), *(p+pos_ori));
+	
+}
+
 
 
 
