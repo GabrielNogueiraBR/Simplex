@@ -414,20 +414,21 @@ int sai_base(float *m, int lin, int col, int coluna_entra){
 		pos = (i * col) + coluna_entra;
 		aux_razao = (*(m+pos_b)) / (*(m+pos));
 		
-		
-		if( i == 0 && *(m+pos) != 0 && primeira_razao == false){
-			menor_razao = (*(m+pos_b)) / (*(m+pos));
-			sai = i;
-			primeira_razao = true;
-		} //primeira ocorrencia
-				
-		else if( (aux_razao < menor_razao && *(m+pos) != 0 ) || (primeira_razao == false && *(m+pos) != 0 ) ){
-			menor_razao =  (*(m+pos_b)) / (*(m+pos));
-			sai = i;
-			primeira_razao = true;
+		if(aux_razao >= 0){
+			if( i == 0 && *(m+pos) != 0 && primeira_razao == false){
+				menor_razao = (*(m+pos_b)) / (*(m+pos));
+				sai = i;
+				primeira_razao = true;
+			} //primeira ocorrencia
+					
+			else if( (aux_razao < menor_razao && *(m+pos) != 0 ) || (primeira_razao == false && *(m+pos) != 0 ) ){
+				menor_razao =  (*(m+pos_b)) / (*(m+pos));
+				sai = i;
+				primeira_razao = true;
+			}
+			
+			pos_b += col;
 		}
-		
-		pos_b += col;
 	}
 	
 	return sai;
