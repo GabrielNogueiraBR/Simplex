@@ -115,6 +115,9 @@ main(){
 	printf("\nNumero de variaveis de decisao: %i", vd);
 	printf("\nNumero de restricoes: %i", rest);
 	
+	printf("\n\n");
+	system("pause");
+	
 }
 
 int retorna_vd(){
