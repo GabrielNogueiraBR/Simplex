@@ -19,7 +19,7 @@ void alimenta_nomes(char **p, int tam);
 void aloca_char(char **p, int tam);
 
 //mostrando as informacoes da tabela
-void mostra_tabela(float *m, int lin, int col, char **p);
+void mostra_tabela(float *m, int lin, int col, char **p, int vd);
 
 //obtendo as informacoes do arquivo e passando para a tabela
 void informacoes_arq(float *m, int lin, int col, int vd, int res);
@@ -30,7 +30,6 @@ bool verifica_solucao(float *m, int lin, int col);
 //verifica a coluna que vai entrar na base e retorna o indice da coluna
 int entra_base(float *m, int lin, int col);
 
-//** 
 //verifica a linha que vai sair da base e retorna o indice da linha
 int sai_base(float *m, int lin, int col, int coluna_entra);
 
@@ -45,6 +44,9 @@ void multiplica_linha(float *m, int lin, int col, int linha_mult, float num);
 
 //soma linha
 void soma_linha(float *m_destino, float *m_origem, int col);
+
+//exibindo as variaveis basicas da tabela
+void exibe_vb(float *m, int lin, int col, char **p, int vd, int rest);
 
 main(){
 	
@@ -84,12 +86,12 @@ main(){
 	
 	//verificando a solucao otima
 	bool solucao_otima = verifica_solucao(m,lin,col);
-	
+		
 	while(solucao_otima != true){
 		
 		//mostrando a tabela
 		printf("\n\n");
-		mostra_tabela(m,lin,col,x);
+		mostra_tabela(m,lin,col,x,vd);
 		
 		//indice da coluna que vai entrar na base
 		int entra = entra_base(m, lin, col);
@@ -104,16 +106,25 @@ main(){
 		recalcular_linhas(m, lin, col, sai, entra);
 		
 		solucao_otima = verifica_solucao(m,lin,col);
+		
 	}//continua executando enquanto nao encontrar a solucao otima
 	
 	//mostrando a tabela final
 	printf("\n\n");
-	mostra_tabela(m,lin,col,x);
+	printf("\n\t\tSOLUCAO OTIMA:\n");
+	mostra_tabela(m,lin,col,x,vd);
 	printf("\n\n");
 	
-	printf("\n\n\n\n\n\n\t\tINFORMACOES IMPORTANTES:\n");
+	printf("\t\tINFORMACOES IMPORTANTES:\n");
 	printf("\nNumero de variaveis de decisao: %i", vd);
 	printf("\nNumero de restricoes: %i", rest);
+	
+	//exibindo variaveis basicas
+	printf("\nVariaveis Basicas (VB):");
+	exibe_vb(m,lin,col,x,vd,rest);
+	
+	//funcao objetiva
+	printf("\nFuncao objetivo Z = %.2f", *(m+(lin*col-1)));
 	
 	printf("\n\n");
 	system("pause");
@@ -221,16 +232,14 @@ void aloca_char(char **p, int tam){
 		exit(1);
 }
 
-void mostra_tabela(float *m, int lin, int col, char **p){
+void mostra_tabela(float *m, int lin, int col, char **p, int vd){
 	
 	int i, j, k, h;
-	int pos; //para andar pelo vetor que representa a tabela 
+	int pos; //para andar pelo vetor que representa a tabela
 	k = 1; //apenas para controlar a exibicao das variaveis superiores
-	h = 2; //apenas para controlar a exibicao das variaveis laterais
+	h = vd; //apenas para controlar a exibicao das variaveis laterais
 	
 	for(i = 0; i < lin + 1 ; i++){
-		
-		
 		// Para exibir os textos superiores (fixo)
 		if(i == 0){
 			for(j=0; j< col + 1; j++){
@@ -238,7 +247,7 @@ void mostra_tabela(float *m, int lin, int col, char **p){
 					printf("Base");
 				}
 				else if(k < col){
-					printf("\t%s",*(p+k-1));
+					printf("\tx%i",j);
 					k++;
 				}
 				else if(k == col){
@@ -250,7 +259,7 @@ void mostra_tabela(float *m, int lin, int col, char **p){
 		// Para exibir as informacoes (variavel)
 		else{
 			pos = (i-1) * col;
-			for(j=0; j< col + 1; j++){
+			for(j=0; j < col + 1; j++){
 				
 				if(j == 0 && i < lin ){
 					printf("%s", *(p+h));
@@ -380,7 +389,7 @@ int entra_base(float *m, int lin, int col){
 	
 	pos = (lin-1) * col; //definindo o primeiro numero da linha Z (última linha) 
 	
-	for(i = 0 ; i < col ; i++){
+	for(i = 0 ; i < col -1 ; i++){
 		if( *(m+pos+i) < 0 && *(m+pos+i) < maior_negativo){
 			maior_negativo = *(m+pos+i); //maior numero negativo
 			entra = i; //indice da posicao com o maior numero negativo
@@ -482,5 +491,21 @@ void multiplica_linha(float *m, int lin, int col, int linha_mult, float num){
 	for(int i = 0 ; i < col; i++){
 		*( m + pos + i) *= num; //fazendo a multiplicacao da linha pelo numero 
 	}//varrendo a linha a ser multiplicada
+	
+}
+
+void exibe_vb(float *m, int lin, int col, char **p, int vd, int rest){
+		
+	int i, j, h;
+	int pos; //para andar pelo vetor que representa a tabela 
+	h = vd;
+	
+	for(i = 0 ; i < rest; i++){
+		pos = i*col +col -1;
+		//variavel
+		printf("\n\t%s = %.2f", *(p+h), *(m+pos));
+		h++;
+		
+	}
 	
 }
